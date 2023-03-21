@@ -176,6 +176,56 @@ class NEONDataLoader:
                        right_index=True,
                        left_on=self.id_col_name))
         return self._height_stats
+    
+    def plot_height(self, site_name, ax1max, ax2max):
+        """Plots the insitu vs lidar max and mean canopy height
+
+        Parameters
+        ----------
+        site_name: str
+            name of the site
+
+        ax1max: int 
+            maximum lim for max height data 
+
+        ax2max: int
+            maximum lim for mean height data 
+
+        """
+
+        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12,4))
+
+        ax1.scatter(self.height_stats.lidar_max, self.height_stats.insitu_max)
+        ax1.plot((0,1), (0,1), transform=ax1.transAxes, ls='--', c='k')
+        sns.regplot(x='lidar_max', y='insitu_max',
+                    data=self.height_stats,
+                    color='blue',
+                    ax=ax1)
+        ax1.set(xlim=(0,ax1max), ylim=(0,ax1max), aspect='equal',
+               title=('Max canopy height: lidar vs insitu at {}'
+                      .format(site_name)),
+               xlabel='Lidar max height (m)',
+               ylabel='In-situ max height (m)')
+        ax1.xaxis.label.set_fontsize(14)
+        ax1.yaxis.label.set_fontsize(14)
+        ax1.title.set_fontsize(14)
+        
+        ax2.scatter(self.height_stats.lidar_mean, self.height_stats.insitu_mean)
+        ax2.plot((0,1), (0,1), transform=ax2.transAxes, ls='--', c='k')
+        sns.regplot(x='lidar_mean', y='insitu_mean',
+                    data=self.height_stats,
+                    color='blue',
+                    ax=ax2)
+        ax2.set(xlim=(0,ax2max), ylim=(0,ax2max), aspect='equal',
+               title=('Mean canopy height: lidar vs insitu at {}'
+                      .format(site_name)),
+               xlabel='Lidar mean height (m)',
+               ylabel='In-situ mean height (m)')
+        ax2.xaxis.label.set_fontsize(14)
+        ax2.yaxis.label.set_fontsize(14)
+        ax2.title.set_fontsize(14)
+
+        plt.show()
 
 class SJERDataLoader(NEONDataLoader):
     site_name = 'SJER'
